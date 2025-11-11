@@ -1,1 +1,1 @@
-The plumed.dat file is the plumed input. The .mdp and .gro files are used to run the metadynamics simulation.
+The plumed.dat file is the plumed input to run the metadynamics simulation.
