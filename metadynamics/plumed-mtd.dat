@@ -1,0 +1,36 @@
+RESTART
+INCLUDE FILE=actin-caba-cg4major.txt
+b1: COM ATOMS=CA1
+b2: COM ATOMS=CA2
+b3: COM ATOMS=CA3
+b4: COM ATOMS=CA4
+
+dihedral_rad: TORSION ATOMS=b2,b1,b3,b4
+dihedral_degrees: COMBINE ARG=dihedral_rad POWERS=1 COEFFICIENTS=57.2957795131 PERIODIC=NO
+
+cleft_width: DISTANCE ATOMS=b2,b4
+
+
+UPPER_WALLS ARG=dihedral_degrees AT=3 KAPPA=10.0 EXP=2 EPS=1 OFFSET=0 LABEL=dduwall
+LOWER_WALLS ARG=dihedral_degrees AT=-35 KAPPA=10.0 EXP=2 EPS=1 OFFSET=0 LABEL=ddlwall
+UPPER_WALLS ARG=cleft_width AT=3.5 KAPPA=500.0 EXP=2 EPS=1 OFFSET=0 LABEL=cwuwall
+
+#metaD on dihed
+METAD ...
+      ARG=dihedral_degrees,cleft_width
+      PACE=100
+      HEIGHT=0.25
+      SIGMA=2,0.1
+      FILE=HILLS
+      GRID_MIN=-47,1
+      GRID_MAX=10,4
+      GRID_BIN=120,120
+      BIASFACTOR=6
+      TEMP=310
+      GRID_NOSPLINE
+      LABEL=metad
+      CALC_RCT
+... METAD
+
+#write every 1 ps
+PRINT ARG=cleft_width,dihedral_degrees,metad.bias,ddlwall.bias,dduwall.bias,cwuwall.bias,metad.rbias FILE=colvar STRIDE=500
